@@ -46,10 +46,10 @@ The complex chloropleths and bar charts in Figure 4 were all generated individua
 ### Figures 5 and 6
 The code for Figures 5 and 6 utilised London squared data which is available at https://github.com/aftertheflood/londonsquared/blob/master/site/data/grid.csv with more information at https://tools.aftertheflood.com/londonsquared/design-process (accessed 5.10.21)
 
-This code manipulates the data to create the visualisation and contains the code used to make the actual visualisations for Figure 5 [visualise_cyclelanes.R](visualise_cyclelanes.R)
+This [code(visualise_cyclelanes.R)](visualise_cyclelanes.R) manipulates the data to create the visualisation and contains the code used to make the actual visualisations for Figure 5 [visualise_cyclelanes.R](visualise_cyclelanes.R)
 ![](images/Figure_5.jpeg) 
 
-Whilst this [code](visualise_LTN1_20_compliance.R) manipulates the OpenStreetMap data and the cycle lanes data to assess compliance with the UK Design Standards.  Not all the data used in this code is in the data folder (although the ones for Figure 6 visualise is) because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf) https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
+Whilst this [code (visualise_LTN1_20_compliance.R)](visualise_LTN1_20_compliance.R) manipulates the OpenStreetMap data and the cycle lanes data to assess compliance with the UK Design Standards.  Not all the data used in this code is in the data folder (although the ones for Figure 6 visualise is) because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf; https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
 
 
 
