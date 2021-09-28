@@ -27,22 +27,33 @@ The below files show the data cleaning process for each of the 9 CID datasets.  
 This code gets the estimated about of commuting cycling through each borough using the Propensity to Cycle Tool (based on the 2011 Census): [get_pct_km_cycled.R](get_pct_km_cycled.R)  
   
 ## Visualisation code  
+
+### Visualisations in Table 1 and Figure 2
 This code creates bar charts and density plots for the characteristics of the different types of safety-related infrastructure that were used in  table 1 and figure 2:
 [visualise_characteristics.R](visualise_characteristics.R) 
 
-This code generates the map of the safety-related infrastructure in the CID (figure 3): [visualise_all_assets.R](visualise_all_assets.R) 
 #### Figure 3
+This code generates the map of the safety-related infrastructure in the CID (figure 3): [visualise_all_assets.R](visualise_all_assets.R) 
+
 ![](images/Figure_3.jpeg)
 
-The complex chloropleths and bar charts in Figure 4 were all generated individually in ggplot and then joined using cowplot:
-[visualise_borough_chloropleths.R](visualise_borough_chloroplets.R)
 #### Figure 4
+The complex chloropleths and bar charts in Figure 4 were all generated individually in ggplot and then joined using cowplot:
+[visualise_borough_chloropleths.R](visualise_borough_chloropleths.R)
+
 ![Figure 4.](images/fig_4_full.jpeg)
 
+#### Figures 5 and 6
 The code for Figures 5 and 6 utilised London squared data which is available at https://github.com/aftertheflood/londonsquared/blob/master/site/data/grid.csv with more information at https://tools.aftertheflood.com/londonsquared/design-process (accessed 5.10.21)
 
-#### Figures 5 and 6
-![](images/Figure_5.jpeg) ![](images/Figure_6.jpeg)
+This code manipulates the data to create the visualisation and contains the code used to make the actual visualisations for Figure 5 [visualise_cyclelanes.R](visualise_cyclelanes.R)
+![](images/Figure_5.jpeg) 
+
+Whilst this code manipulates the OpenStreetMap data and the cycle lanes data to assess compliance with the UK Design Standards.  Not all the data used in this code is in the data folder (although the ones for Figure 6 visualise is) because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf) https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
+
+
+
+![](images/Figure_6.jpeg)
 
 
 ### Acknowledgementsand Licenses

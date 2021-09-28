@@ -41,8 +41,8 @@ mapviewOptions(native.crs = TRUE)
 #                   Import and data cleanse OSM speed limit data               #
 ################################################################################
 
-# Load 2019 OSM dataset
-gl_pbf19 = "data/greater-london-190101.osm.pbf"
+# Load 2019 OSM dataset - nb commented out due to huge file size - cleaned version available in data folder
+#gl_pbf19 = "data/greater-london-190101.osm.pbf"
 gl_osm_lines19 = oe_read(gl_pbf19, quiet = FALSE, 
                          extra_tags = c("maxspeed", "width", "maxwidth", "lanes")) # Simple feature collection with 313409 features and 10 fields, CRS WGS84
 
@@ -3695,21 +3695,14 @@ comp_vis = known_sl_compliance_vis %>%
 # Create visualisation for paper (figure 6) #
 #############################################
 
-# had to alter text sizes so that when combined look ok
-#Option1) cowplot
 maps = plot_grid(lines, map_fixed, 
                  ncol = 1, nrow = 2)
 fig_6 = plot_grid(maps, comp_vis,
           ncol = 2, rel_widths = c(2,1.2))
-ggsave("output/summary_stats/Figure_6.tiff", 
-       plot = fig_6, dpi = 300, width = 190, height = 160, units = "mm", bg = "white")
 
 
-# Option 2) - makes lots of white space around maps
-library(patchwork)
-ltn_comp_plot = ((lines/map_fixed)|comp_vis) + plot_layout(widths = c(4,1), )
-ggsave("output/summary_stats/ltn_compliance.tiff", 
-       plot = ltn_comp_plot, dpi = 300, width = 190, height = 160, units = "mm")
+
+
 
 
 
@@ -3860,8 +3853,7 @@ figureA3 = known_sl_compliance_ns_vis %>%
 
 # Save visualisation
 figA3 = figureA3 + plot_spacer() +plot_layout(width = c(1, 0.1)) # have to add spacer as otherwise includes grey squares (!?!)
-ggsave("output/summary_stats/fa3_ltn_compliance_exc_shared.tiff", 
-       plot = figA3, dpi = 300, width = 90, height = 160, units = "mm")
+
 
 
 
