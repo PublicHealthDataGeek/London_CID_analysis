@@ -31,15 +31,18 @@ This code creates bar charts and density plots for the characteristics of the di
 [visualise_characteristics.R](visualise_characteristics.R) 
 
 This code generates the map of the safety-related infrastructure in the CID (figure 3): [visualise_all_assets.R](visualise_all_assets.R) 
-![Figure 3.](images/Figure_3.jpeg)
+#### Figure 3
+![](images/Figure_3.jpeg)
 
 The complex chloropleths and bar charts in Figure 4 were all generated individually in ggplot and then joined using cowplot:
 [visualise_borough_chloropleths.R](visualise_borough_chloroplets.R)
+#### Figure 4
 ![Figure 4.](images/fig_4_full.jpeg)
 
 The code for Figures 5 and 6 utilised London squared data which is available at https://github.com/aftertheflood/londonsquared/blob/master/site/data/grid.csv with more information at https://tools.aftertheflood.com/londonsquared/design-process (accessed 5.10.21)
 
-![Figure 5.](images/Figure_5.jpeg) ![Figure 6.](images/Figure_6.jpeg)
+#### Figures 5 and 6
+![](images/Figure_5.jpeg) ![](images/Figure_6.jpeg)
 
 
 ### Acknowledgementsand Licenses
