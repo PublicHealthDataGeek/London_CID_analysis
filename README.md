@@ -24,19 +24,29 @@ The below files show the data cleaning process for each of the 9 CID datasets.  
 [data_clean_CID_trafficcalming.R](data_clean_CID_trafficcalming.R) - data cleaning file for traffic calming
 
 ## Obtaining and cleaning other datasets used in the analysis  
-This code get the estimated about of commuting cycling through each borough using the Propensity to Cycle Tool (based on the 2011 Census): [get_pct_km_cycled.R](get_pct_km_cycled.R)  
+This code gets the estimated about of commuting cycling through each borough using the Propensity to Cycle Tool (based on the 2011 Census): [get_pct_km_cycled.R](get_pct_km_cycled.R)  
   
 ## Visualisation code  
-The below code creates bar charts and density plots for the characteristics of the different types of safety-related infrastructure that were used in  table 1 and figure 2:
+This code creates bar charts and density plots for the characteristics of the different types of safety-related infrastructure that were used in  table 1 and figure 2:
 [visualise_characteristics.R](visualise_characteristics.R) 
 
 This code generates the map of the safety-related infrastructure in the CID (figure 3): [visualise_all_assets.R](visualise_all_assets.R) 
-![Figure 3.](images/Figure_3jpeg)
+![Figure 3.](images/Figure_3.jpeg)
 
 The complex chloropleths and bar charts in Figure 4 were all generated individually in ggplot and then joined using cowplot:
 [visualise_borough_chloropleths.R](visualise_borough_chloroplets.R)
 ![Figure 4.](images/fig_4_full.jpeg)
 
+The code for Figures 5 and 6 utilised London squared data which is available at https://github.com/aftertheflood/londonsquared/blob/master/site/data/grid.csv with more information at https://tools.aftertheflood.com/londonsquared/design-process (accessed 5.10.21)
+
+![Figure 5.](images/Figure_5.jpeg) ![Figure 6.](images/Figure_6.jpeg)
+
+
+### Acknowledgementsand Licenses
+After the flood: Copyright 2019 After the Flood Ltd.  
+TfL data: Powered by TfLOpen Data.  Contains OS data © Crown copyright and database rights 2016 and Geomni UK Map data © and database rights [2019].  
+ONS data: Contains public sector information licensed under the Open Government Licence v3.0.  
+OpenStreetMap data: Map data copyrighted OpenStreetMap contributors and available https://www.openstreetmap.org and contains Ordnance Survey data © Crown copyright and database right 2010-19.
 
 
 
