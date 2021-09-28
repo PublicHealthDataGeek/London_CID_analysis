@@ -1,5 +1,6 @@
 # Is cycling infrastructure in London safe and equitable? Evidence from the Cycling Infrastructure Database.
 
+This repository contains the code used to clean the data for this paper and to generate the visualisations.  
 LINK TO PAPER
 
 ## CID Data Cleaning code 
