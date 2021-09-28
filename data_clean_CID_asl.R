@@ -131,5 +131,5 @@ f_advanced_stop_line$BOROUGH = factor(f_advanced_stop_line$BOROUGH) %>%
 ######################
 # SAVE CLEAN DATASET #
 ######################
-saveRDS(f_advanced_stop_line, file = "data/cleansed_asl")
+#saveRDS(f_advanced_stop_line, file = "data/cleansed_asl")
 

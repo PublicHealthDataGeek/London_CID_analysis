@@ -373,9 +373,8 @@ post_borough_cleanse_map = mapview(lon_lad_2020, alpha.regions = 0.1, lwd = 1) +
 ######################
 # SAVE CLEAN DATASET #
 ######################
-saveRDS(f_cycle_lane_track, file = "data/cleansed_cycle_lane_track")
+#saveRDS(f_cycle_lane_track, file = "data/cleansed_cycle_lane_track")
 
-# leafsync::sync(pre_borough_cleanse_map, mid_borough_cleanse_map, cycle_lanes_NA_map, post_borough_cleanse_map)
-# this map isnt quite right
+
 
 

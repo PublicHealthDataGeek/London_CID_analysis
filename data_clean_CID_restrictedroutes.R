@@ -300,7 +300,6 @@ post_borough_cleanse_map = mapview(f_restricted_route, zcol = "BOROUGH", na.colo
 ######################
 # SAVE CLEAN DATASET #
 ######################
-saveRDS(f_restricted_route, file = "data/cleansed_restricted_route")
+#saveRDS(f_restricted_route, file = "data/cleansed_restricted_route")
 
-# leafsync::sync(pre_borough_cleanse_map, mid_borough_cleanse_map, rr_NA_map, post_borough_cleanse_map)
-# this map isnt quite right
+

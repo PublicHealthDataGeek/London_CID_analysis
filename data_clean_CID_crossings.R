@@ -378,7 +378,7 @@ sum(st_length(crossings_ls_corrected)) # check have the correct length(width) YE
 ######################
 # SAVE CLEAN DATASET #
 ######################
-saveRDS(crossings_ls_corrected, file = "data/cleansed_crossings")
+#saveRDS(crossings_ls_corrected, file = "data/cleansed_crossings")
 
 
 
