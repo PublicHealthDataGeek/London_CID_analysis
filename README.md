@@ -2,6 +2,7 @@
 
 LINK TO PAPER
 
+## CID Data Cleaning code 
 The below files show the data cleaning process for each of the 9 CID datasets.  The data cleansed files can be found in the data subfolder.   
 
 [data_clean_CID_asl.R](data_clean_CID_asl.R) - data cleaning file for Advanced Stop Lines  
@@ -22,13 +23,21 @@ The below files show the data cleaning process for each of the 9 CID datasets.  
 
 [data_clean_CID_trafficcalming.R](data_clean_CID_trafficcalming.R) - data cleaning file for traffic calming
 
+## Obtaining and cleaning other datasets used in the analysis  
+This code get the estimated about of commuting cycling through each borough using the Propensity to Cycle Tool (based on the 2011 Census): [get_pct_km_cycled.R](get_pct_km_cycled.R)  
   
-This code get the estimated about of commuting cycling through each borough using the Propensity to Cycle Tool (based on the 2011 Census):
+## Visualisation code  
+The below code creates bar charts and density plots for the characteristics of the different types of safety-related infrastructure that were used in  table 1 and figure 2:
+[visualise_characteristics.R](visualise_characteristics.R) 
 
-[get_pct_km_cycled.R](get_pct_km_cycled.R)  
-  
-  
-This code generates the map of the safety-related infrastructure in the CID:
-[visualise_all_assets.R](visualise_all_assets.R) 
-![Maps of safety-related infrastructure in the CID.](all_assets_map_with_legend_v2.jpeg)
+This code generates the map of the safety-related infrastructure in the CID (figure 3): [visualise_all_assets.R](visualise_all_assets.R) 
+![Figure 3.](images/Figure_3jpeg)
+
+The complex chloropleths and bar charts in Figure 4 were all generated individually in ggplot and then joined using cowplot:
+[visualise_borough_chloropleths.R](visualise_borough_chloroplets.R)
+![Figure 4.](images/fig_4_full.jpeg)
+
+
+
+
 
