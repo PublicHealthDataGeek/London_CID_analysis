@@ -29,7 +29,7 @@ This code gets the estimated about of commuting cycling through each borough usi
   
 ## Summarised data
 These two R files contain the code used to generate summaries of the data including the tables generated in the paper.  
-[data_analysis_summary_stats_part1.R](data_analysis_summary_stats_part1.R)
+[data_analysis_summary_stats_part1.R](data_analysis_summary_stats_part1.R)  
 [data_analysis_summary_stats_part2.R](data_analysis_summary_stats_part2.R)
     
 ## Visualisation code  
