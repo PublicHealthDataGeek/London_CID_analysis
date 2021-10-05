@@ -3,7 +3,7 @@
 This repository contains the code used to clean the data for this paper and to generate the visualisations.  
 LINK TO PAPER
 
-## CID Data Cleaning code 
+## CID data cleaning code 
 The below files show the data cleaning process for each of the 9 CID datasets.  The data cleansed files can be found in the data subfolder.   
 
 [data_clean_CID_asl.R](data_clean_CID_asl.R) - data cleaning file for Advanced Stop Lines  
@@ -27,23 +27,28 @@ The below files show the data cleaning process for each of the 9 CID datasets.  
 ## Obtaining and cleaning other datasets used in the analysis  
 This code gets the estimated about of commuting cycling through each borough using the Propensity to Cycle Tool (based on the 2011 Census): [get_pct_km_cycled.R](get_pct_km_cycled.R). The code used to manipulate and join OpenStreetMap data to the cycle lanes is in the code for Figure 6 below.    
   
+## Summarised data
+These two R files contain the code used to generate summaries of the data including the tables generated in the paper.  
+[data_analysis_summary_stats_part1.R](data_analysis_summary_stats_part1.R)
+[data_analysis_summary_stats_part2.R](data_analysis_summary_stats_part2.R)
+    
 ## Visualisation code  
 
-### Visualisations in Table 1 and Figure 2
+#### Visualisations in Table 1 and Figure 2
 This [code(visualise_characteristics.R)](visualise_characteristics.R) creates bar charts and density plots for the characteristics of the different types of safety-related infrastructure that were used in  table 1 and figure 2. 
 
-### Figure 3
+#### Figure 3
 This [code(visualise_all_assets.R)](visualise_all_assets.R) generates the map of the safety-related infrastructure in the CID (figure 3) shown below
 ##### Figure 3: Spatial distribution of safety-related cycling infrastructure across London
 ![](images/Figure_3.jpeg)
 
-### Figure 4
+#### Figure 4
 The complex chloropleths and bar charts in Figure 4 were all generated individually in ggplot and then joined using cowplot:
 [visualise_borough_chloropleths.R](visualise_borough_chloropleths.R)
 ##### Figure 4: Visualisations of borough-level safety-related cycling infrastructure as raw data 1and normalised to borough geographical area, population size and commuter cycling (bar chart key:dashed line = median, solid line = mean) 
 ![Figure 4.](images/fig_4_full.jpeg)
 
-### Figures 5 and 6
+#### Figures 5 and 6
 The code for Figures 5 and 6 utilised London squared data which is available at https://github.com/aftertheflood/londonsquared/blob/master/site/data/grid.csv with more information at https://tools.aftertheflood.com/londonsquared/design-process (accessed 5.10.21)
 
 This [code(visualise_cyclelanes.R)](visualise_cyclelanes.R) manipulates the data to create the visualisation and contains the code used to make the actual visualisations for Figure 5.
@@ -55,9 +60,10 @@ Whilst this [code (visualise_LTN1_20_compliance.R)](visualise_LTN1_20_compliance
 
 ##### Figure 6: Compliance of on-road cycle lanes with LTN 1/20: Spatial distribution (top left), spatially arranged borough bar charts showing length in kilometre (bottom right) and percentage of length by borough where speed limit is known (right, solid line = mean)
 ![](images/Figure_6.jpeg)
+  
+  
 
-
-### Acknowledgementsand Licenses
+## Acknowledgements and Licenses
 After the flood: Copyright 2019 After the Flood Ltd.  
 TfL data: Powered by TfLOpen Data.  Contains OS data © Crown copyright and database rights 2016 and Geomni UK Map data © and database rights [2019].  
 ONS data: Contains public sector information licensed under the Open Government Licence v3.0.  
