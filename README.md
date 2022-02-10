@@ -38,27 +38,27 @@ These two R files contain the code used to generate summaries of the data includ
 This [code](code/visualise_characteristics.R) creates bar charts and density plots for the characteristics of the different types of safety-related infrastructure that were used in  table 1 and figure 3. 
 
 #### Figure 4
-This [code](code/visualise_all_assets.R) generates the map of the safety-related infrastructure in the CID (figure 4) shown below
-##### Figure 4: Spatial distribution of safety-related cycling infrastructure across London
+This [code](code/visualise_all_assets.R) generates the map of the safety-related infrastructure in the CID (figure 4) shown below.
+##### Figure 4: Spatial distribution of cycling infrastructure across London
 ![](images/Figure_4_resub.jpeg)
 
 #### Figure 5
 The complex chloropleths and bar charts in Figure 5 were all generated individually in ggplot and then joined using cowplot using this
-[code](code/visualise_borough_chloropleths.R)
-##### Figure 5: Visualisations of borough-level safety-related cycling infrastructure as raw data and normalised to borough geographical area, population size and commuter cycling (bar chart key:dashed line = median, solid line = mean) 
+[code](code/visualise_borough_chloropleths.R).
+##### Figure 5: Visualisations of CID borough-level cycling infrastructure as raw data and normalised to borough geographical area, population size and commuter cycling (bar chart key:dashed line = median, solid line = mean) 
 ![Figure 5.](images/fig_5_full.jpeg)
 
 #### Figures 6 and 7
-The code for Figures 6 and 7 utilised London squared data which is available at https://github.com/aftertheflood/londonsquared/blob/master/site/data/grid.csv with more information at https://tools.aftertheflood.com/londonsquared/design-process (accessed 5.10.21)
+The code for Figures 6 and 7 utilised London squared data which is available at https://github.com/aftertheflood/londonsquared/blob/master/site/data/grid.csv with more information at https://tools.aftertheflood.com/londonsquared/design-process (accessed 5.10.21).
 
 This [code](code/visualise_cyclelanes.R) manipulates the data to create the visualisation and contains the code used to make the actual visualisations for Figure 6.
-##### Figure 6: Highest degree of separation of on-road cycle lanes from motor vehicles: Spatial distribution (left) and spatially arranged borough bar charts showing length in kilometre (top right) and length by borough area in kilometre per square kilometre (bottom right)
+##### Figure 6: Highest degree of separation of CID on-road cycle lanes from motor vehicles: Spatial distribution (left) and spatially arranged borough bar charts showing length in kilometre (top right) and length by borough area in kilometre per square kilometre (bottom right)
 ![](images/Figure_6.jpeg) 
 
-Whilst this [code](code/visualise_LTN1_20_compliance.R) manipulates the OpenStreetMap data and the cycle lanes data to assess and visualise compliance with the UK Design Standards (Figure 7).  Not all the data used in this code is in the data folder because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf; https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
+Whilst this [code](code/visualise_LTN1_20_compliance.R) manipulates the OpenStreetMap data and the cycle lanes data to estimate and visualise compliance with the UK Design Standards (Figure 7).  Not all the data used in this code is in the data folder because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf; https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
 
 
-##### Figure 7: Compliance of on-road cycle lanes with LTN 1/20: Spatial distribution (top left), spatially arranged borough bar charts showing length in kilometre (bottom right) and percentage of length by borough where speed limit is known (right, solid line = mean)
+##### Figure 7: Estimated compliance of on-road cycle lanes with LTN 1/20: Spatial distribution (top left), spatially arranged borough bar charts showing length in kilometre (bottom left) and percentage of length by borough where speed limit is known (right, solid line = mean)
 ![](images/Figure_7.jpeg)
   
   
