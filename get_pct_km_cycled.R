@@ -1,11 +1,17 @@
 #################################################################################
 # Get PCT cycling data                                                          #
 #                                                                               #
-# This code obtains the estimated amount of commuting cycling on route network  #
-# segments in London using the Census 2011 commuting data.                     #
+# THis code obtains the estimated amount of commuting cycling on route network  #
+# segments in London using the Census 2011 commuting data.                      #
 # It is upscaled from metre to kilometre.                                       #
 # There is also Borough level estimates where the amount of cycling on the      #
 # segments that fall within each London Borough is aggregated.                  #
+#                                                                               #
+# This code was rerun on 20th January 2022 to:                                  #
+#  - correct the spatial issues that had been identified in 2021 regarding      #
+#    gdal libraries on linux laptop                                             # 
+#  - to take into account comments from Reviewer 1 on the paper from this data  #
+#    (namely to leave the data at a working day level rather than a full year)  #
 #                                                                               #
 # Created 19/3/20                                                               #
 #################################################################################
@@ -44,12 +50,14 @@ mapview(lon_rnet, color = "red") + mapview(lon_lad_2020, zcol = "BOROUGH")
 #  Split route network by London Boroughs boundaries into segments
 lon_rnet_intersection = st_intersection(lon_lad_2020, lon_rnet) # n = 71494 
 mapview(lon_rnet_intersection, color = "red") + mapview(lon_lad_2020, zcol = "BOROUGH") # now data is confined to London Boroughs
-# names(lon_rnet_intersection)
-# [1] "BOROUGH"        "objectid"       "lad20cd"        "lad20nmw"      
-# [5] "bng_e"          "bng_n"          "long"           "lat"           
-# [9] "st_areasha"     "st_lengths"     "local_id"       "bicycle"       
-# [13] "govtarget_slc"  "govnearmkt_slc" "gendereq_slc"   "dutch_slc"     
-# [17] "ebike_slc"      "segment_length" "geometry"      
+names(lon_rnet_intersection)
+# [1] "BOROUGH"        "FID"            "objectid"      
+# [4] "lad20cd"        "lad20nmw"       "bng_e"         
+# [7] "bng_n"          "long"           "lat"           
+# [10] "st_areasha"     "st_lengths"     "Shape__Are"    
+# [13] "Shape__Len"     "local_id"       "bicycle"       
+# [16] "govtarget_slc"  "govnearmkt_slc" "gendereq_slc"  
+# [19] "dutch_slc"      "ebike_slc"      "geometry"      
 
 
 ###################################################################################
@@ -104,7 +112,7 @@ sum(new_segments$segment_length) # = 437975.4m (n = 3233) - ie matches that of t
 # x$segment_length = as.numeric(sf::st_length(x))
 # sum(x$segment_length) # total length of the new segments should be 437975.4
 
-# Calculate metres cycled per working day for the new segments
+# Calculate metres cycled per (working) day for the new segments
 new_segments$m_cycled_per_working_day = new_segments$segment_length * new_segments$bicycle
 
 
@@ -119,7 +127,7 @@ old_segments = lon_rnet_intersection %>%
 # Calculate segment length
 old_segments$segment_length = as.numeric(sf::st_length(old_segments))
 
-# Calculate metres cycled per working day for the new segments
+# Calculate metres cycled per (working) day for the new segments
 old_segments$m_cycled_per_working_day = old_segments$segment_length * old_segments$bicycle 
 
 
@@ -129,26 +137,59 @@ old_segments$m_cycled_per_working_day = old_segments$segment_length * old_segmen
 
 # Join old_segments to new_segments to get full London Borough dataset 
 lon_rnet_pct_cycling_data = rbind(old_segments, new_segments)
-#sum(lon_rnet_pct_cycling_data$segment_length)
-#[1] 10369759
+
+# Remove st_lengths column as this data is not accurate(based on original 
+# segment lengths and made inaccurate when we did st_intersection) - segment_length 
+# is the accurate length as it is based on the new geometry of intersected segments
+lon_rnet_pct_cycling_data = lon_rnet_pct_cycling_data %>%
+  select(-c(st_lengths))
+
+# Calculate total length of lon_rnet_pct_cycling
+sum(lon_rnet_pct_cycling_data$segment_length)
+#[1] 10369759m segment length, 10369.76km
 
 # Obtain kms cycled for commuting per year (200 = number of working days)
-lon_rnet_pct_cycling_data$km_cycled_for_commuting_per_year_estimated = lon_rnet_pct_cycling_data$m_cycled_per_working_day * 
+lon_rnet_pct_cycling_data$km_cycled_for_commuting_per_year_estimated = lon_rnet_pct_cycling_data$m_cycled_per_working_day *
   2 * 200 / # estimate of trips days per year, morning and afternoon
   1000 # to get km
+#sum(lon_rnet_pct_cycling_data$km_cycled_for_commuting_per_year_estimated) # 166777094 km
+
+
+# Create column of km from m cycled per working day
+lon_rnet_pct_cycling_data$km_cycled_per_working_day = lon_rnet_pct_cycling_data$m_cycled_per_working_day/1000
+#sum(lon_rnet_pct_cycling_data$m_cycled_per_working_day) # 416942735m
+#sum(lon_rnet_pct_cycling_data$km_cycled_per_working_day) # 416942.7km
 
 # Create dataset of Boroughs and estimated cycling through the borough
+# Borough_commuting = lon_rnet_pct_cycling_data %>%
+#   st_drop_geometry() %>%
+#   select(c(BOROUGH, km_cycled_for_commuting_per_year_estimated)) %>%
+#   group_by(BOROUGH) %>%
+#   summarise(total_km_cycled_for_commuting_per_year_estimated = sum(km_cycled_for_commuting_per_year_estimated))
+
 Borough_commuting = lon_rnet_pct_cycling_data %>%
-  st_drop_geometry() %>%
-  select(c(BOROUGH, km_cycled_for_commuting_per_year_estimated)) %>%
-  group_by(BOROUGH) %>%
-  summarise(total_km_cycled_for_commuting_per_year_estimated = sum(km_cycled_for_commuting_per_year_estimated))
+    st_drop_geometry() %>%
+    select(c(BOROUGH, km_cycled_per_working_day, km_cycled_for_commuting_per_year_estimated)) %>%
+    group_by(BOROUGH) %>%
+    summarise(total_km_cycled_for_commuting_per_working_day_estimated = sum(km_cycled_per_working_day),
+              total_km_cycled_for_commuting_per_year_estimated = sum(km_cycled_for_commuting_per_year_estimated))
+  
+# check: sum(Borough_commuting$total_km_cycled_for_commuting_per_working_day_estimated) # 416942.7
+
+
+# For Paper 1 responses: calculate number of cyclists included in Greater London PCT
+cyclists = lon_rnet_pct_cycling_data %>% 
+  filter(bicycle != 0) 
+nrow(cyclists) # 61705
+sum(cyclists$km_cycled_per_working_day) #416942.7km
+sum(cyclists$segment_length) # their routes were 8491293m
+
 
 ############
 # Save RDS #
 ############
-# saveRDS(Borough_commuting, file = "data/Borough_commuting.rds")
-# saveRDS(lon_rnet_pct_cycling_data, "data/lon_rnet_pct_cycling.rds")
+saveRDS(Borough_commuting, file = "data/Borough_commuting_25_01_2022.rds")
+saveRDS(lon_rnet_pct_cycling_data, "data/lon_rnet_pct_cycling_20_01_2022.rds")
 
 
 

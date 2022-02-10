@@ -1,9 +1,12 @@
 ###################################################################################
 # Data cleaning CID - Traffic calming                                             #
 #                                                                                 #
-# This code downloads the CID and cleans up the variables                         #                        #
+# This code downloads the CID and cleans up the variables                         #                       
 # It also checks that the Boroughs are correctly assigned                         #
 # 138 observations incorrectly located and reallocated                            #
+#                                                                                 #
+# Code rerun Jan 2022 to ensure spatial data not affected by issue with gdal      #
+# libraries and linux.                                                            #
 ###################################################################################
 
 ######################################
@@ -21,7 +24,7 @@ library(forcats)
 library(units)
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -108,4 +111,4 @@ traffic_calming_corrected = joined %>%
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(traffic_calming_corrected, file = "data/cleansed_trafficcalming")
+#saveRDS(traffic_calming_corrected, file = "data/cleansed_trafficcalming_24_01_2022")

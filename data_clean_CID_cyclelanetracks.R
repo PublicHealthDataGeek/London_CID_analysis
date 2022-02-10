@@ -7,6 +7,8 @@
 # Where cycle lanes and tracks cross more than one London Borough they are split  #
 # into multiple observations based on their Borough location                      #
 #                                                                                 #
+# This code was rerun on 24/01/2022 to ensure had correct spatial data for CLT    # 
+# following the issue with gdal libraries and linux in Jan 2022.                  #
 ###################################################################################
 
 ######################################
@@ -24,7 +26,7 @@ library(forcats)
 library(units)
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -68,8 +70,10 @@ unique(cycle_lane_track$CLT_COLOUR) # "NONE"        "GREEN"       "RED"         
 
 # Examine url data for completeness
 count_photo1 =  cycle_lane_track %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 588 have no asset photo 1
 count_photo2 =  cycle_lane_track %>%
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 605 have no asset photo 2
 
 ###############################################
@@ -130,8 +134,6 @@ f_cycle_lane_track$CLT_MANDAT = fct_recode(f_cycle_lane_track$CLT_MANDAT, "TRUE"
 # is a yellow track in Merton (near Wimbledon)
 pre_borough_cleanse_map = mapview(f_cycle_lane_track, zcol = "BOROUGH", na.color = "red") + 
   mapview(lon_lad_2020, alpha.regions = 0.1, legend = FALSE, lwd = 1)
-## NB above map - Westminster legend is coloured red but its lines are a yellow. 
-## Will need sorting if publishing.  
 
 # As comparing Boroughs by count and length, need to ensure that each bit of
 # cycle lane/track is correctly assigned to Borough.  
@@ -229,7 +231,7 @@ new_segments_corrected %>%
 #       2   72
 
 # check geometry 
-st_geometry_type(lanes_borough_corrected) # mix of linestring and multilinestring
+st_geometry_type(new_segments_corrected) # mix of linestring and multilinestring
 
 # Create df of all the observations with correct Boroughs that can be joined
 lanes_borough_corrected = new_segments_corrected %>%
@@ -246,7 +248,7 @@ f_cycle_lane_track = f_cycle_lane_track %>%
   filter(!FEATURE_ID %in% multi_feature_id_list) # n = 24904 ie 24976 - 72 THis is correct
 
 # Join lanes_borough_corrected to f_cycle_lane_track - will then have 25048 observations
-f_cycle_lane_track = rbind(f_cycle_lane_track, lanes_borough_corrected) # n= 25048
+f_cycle_lane_track = rbind(f_cycle_lane_track, lanes_borough_corrected) # n= 25048 ie 24904 +144
 
 # If visualise again, now looks correct - just need to sort out observations with BOROUGH NAs
 mid_borough_cleanse_map = mapview(f_cycle_lane_track, zcol = "BOROUGH", na.color = "red") + 
@@ -373,7 +375,7 @@ post_borough_cleanse_map = mapview(lon_lad_2020, alpha.regions = 0.1, lwd = 1) +
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(f_cycle_lane_track, file = "data/cleansed_cycle_lane_track")
+saveRDS(f_cycle_lane_track, file = "data/cleansed_cycle_lane_track_24_01_2022")
 
 
 

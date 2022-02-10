@@ -4,7 +4,10 @@
 # This code downloads the CID and cleans up the variables                         #
 # It recodes the observation (n = 1) that has no Borough assigned                 #
 # It also checks that the Boroughs are correctly assigned for the rest of the ASL #
-#                                                                                 #
+#                                                                                 #  
+# This code was rerun on 24th January to make sure cleansed asl data file has     #
+# correct spatial data due to issue with gdal libraries and linux in Jan 2022.    #
+# Code works fine and get same results as before.                                 #
 ###################################################################################
 
 ######################################
@@ -20,7 +23,7 @@ library(forcats)
 library(units)
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # Import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -50,8 +53,10 @@ unique(advanced_stop_line$ASL_COLOUR)  # "NONE" "GREEN" "RED" "BUFF/YELLOW" "BLU
 
 # examine URL data
 count_photo1 =  advanced_stop_line %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 48 have no asset photo 1
-count_photo2 =  advanced_stop_line %>%
+count_photo2 =  advanced_stop_line %>% 
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 51 have no asset photo 2
 
 ###############################################
@@ -131,5 +136,5 @@ f_advanced_stop_line$BOROUGH = factor(f_advanced_stop_line$BOROUGH) %>%
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(f_advanced_stop_line, file = "data/cleansed_asl")
+#saveRDS(f_advanced_stop_line, file = "data/cleansed_asl_24_01_2022")
 

@@ -5,6 +5,9 @@
 # It recodes the observations that has no Borough assigned                        #
 # It also checks that the Boroughs are correctly assigned                         #
 # 2 were reassigned                                                               #
+#                                                                                 #
+# Code was rerun Jan 2022 to ensure spatial data not affected by gdal library and #
+# linux issue.                                                                    #
 ###################################################################################
 
 ######################################
@@ -23,7 +26,7 @@ library(units)
 
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -50,9 +53,11 @@ unique(signal$SIG_TWOSTG)
 unique(signal$SIG_GATE)
 
 # examine URL data
-count_photo1 =  f_signal %>%
+count_photo1 =  signal %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 8 have no asset photo 1
 count_photo2 =  signal %>%
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 8 have no asset photo 2
 
 ###############################################
@@ -121,5 +126,5 @@ signals_corrected = joined %>%
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(f_signal, file = "data/cleansed_signals")
+#saveRDS(f_signal, file = "data/cleansed_signals_24_01_2022")
 

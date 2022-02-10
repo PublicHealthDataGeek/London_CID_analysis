@@ -6,6 +6,9 @@
 # 2 NAs outside London so dropped, 6 further observations had boroughs but were   #
 # outside london so dropped.                                                      #
 # 398 observations incorrectly located and reallocated                            #
+#                                                                                 #
+# This code was rerun Jan 2022 to ensure spatial dat not affected by gdal library #
+# and linux issue.                                                                #
 ###################################################################################
 
 ######################################
@@ -23,7 +26,7 @@ library(forcats)
 library(units)
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -77,8 +80,10 @@ unique(signage$SS_COLOUR) #  NONE GREEN RED BLUE NA <Null> BUFF/YELLOW: 3 NA, 2 
 
 # examine URL data
 count_photo1 =  signage %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 1347 have no asset photo 1
 count_photo2 =  signage %>%
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 1336 have no asset photo 2
 
 ###############################################
@@ -142,8 +147,8 @@ joined = st_join(f_signage, lon_lad_2020) # n = 118832
 # initial attempts to looping code resulted in 6 observations being identified 
 # as being outside London according to ONS despite having Borough coded in CID
 # these are then dropped.  
-# x = joined %>%
-#   filter(is.na(BOROUGH.y)) # n = 6, they have 
+x = joined %>%
+   filter(is.na(BOROUGH.y)) # n = 6, 
 # unique(x$BOROUGH.x) # Bexley and Croydon
 # unique(x$BOROUGH.y) #  <NA>
 # 
@@ -200,4 +205,4 @@ signage_corrected = joined %>%
 # SAVE CLEAN DATASET #
 ######################
 
-#saveRDS(signage_corrected, file = "data/cleansed_signage")
+#saveRDS(signage_corrected, file = "data/cleansed_signage_24_01_2022")

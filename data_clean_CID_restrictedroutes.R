@@ -7,6 +7,8 @@
 # Where restricted routes cross more than one London Borough they are split       #
 # into multiple observations based on their Borough location                      #
 #                                                                                 #
+# Code rerun Jan 2022 to ensure that the spatial data issue affecting gdal        #
+# libraries and linux has not affected this spatial data.                         #
 ###################################################################################
 
 ######################################
@@ -24,7 +26,7 @@ library(forcats)
 library(units)
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -52,8 +54,10 @@ unique(restricted_route$RES_LIFT)
 
 # examine URL data
 count_photo1 =  restricted_route %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 71 have no asset photo 1
 count_photo2 =  restricted_route %>%
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 52 have no asset photo 2
 
 ###############################################
@@ -75,9 +79,8 @@ anyNA(f_restricted_route$BOROUGH) # = TRUE
 # Borough
 pre_borough_cleanse_map = mapview(f_restricted_route, zcol = "BOROUGH", na.colour = "red") + 
   mapview(lon_lad_2020, alpha.regions = 0.1, legend = FALSE, lwd = 1)
-## NB above map - Westminster legend is coloured grey but its lines are a yellow. 
-## PLus NA not showing as red
-## Will need sorting if publishing. 
+## NA not showing as red???
+
 
 # As comparing Boroughs by count and length, need to ensure that each bit of
 # restricted route is correctly assigned to Borough.  
@@ -90,7 +93,7 @@ rr_borough = f_restricted_route %>%
   filter(!is.na(BOROUGH)) # 1360 observations 
 
 rr_borough_NA = f_restricted_route %>%
-  filter(is.na(BOROUGH)) # 18 observations ie 18 cycle lanes/tracks have no Borough
+  filter(is.na(BOROUGH)) # 18 observations ie 18 restricted routes have no Borough
 
 ##### PART 1 - ensure that all observations have the correct Borough attached
 rr_borough_split = st_intersection(lon_lad_2020, rr_borough) 
@@ -201,7 +204,6 @@ mid_borough_cleanse_map = mapview(f_restricted_route, zcol = "BOROUGH", na.color
 restricted_route_borough_NA = f_restricted_route %>%
   filter(is.na(BOROUGH)) # 18 observations ie 18 restricted routes no Borough
 
-
 # 2) Split each observation into segments using ONS borough boundaries 
 restricted_route_borough_NA_i = st_intersection(lon_lad_2020, restricted_route_borough_NA) # 36 observations, 
 # geometry column is from the lanes dataset
@@ -300,6 +302,6 @@ post_borough_cleanse_map = mapview(f_restricted_route, zcol = "BOROUGH", na.colo
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(f_restricted_route, file = "data/cleansed_restricted_route")
+saveRDS(f_restricted_route, file = "data/cleansed_restricted_route_24_01_2022")
 
 

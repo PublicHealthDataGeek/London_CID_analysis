@@ -1,11 +1,13 @@
 ################################################################################
 #                                                                              #
-#                     Characteristics charts                                   #
-#                     ######################                                   #
+#                     Characteristics charts for JTG resubmission              #
+#                     ###########################################              #
 #                                                                              #
 # This code creates the characteristics visualisations and the comparison      #
 # on_road cycle lanes and off-road cycle tracks                                #
-# road cycle lanes/tracks                                                      #
+# road cycle lanes/tracks   
+#
+# It incorporates the comments from the Review to generate the figures
 ################################################################################
 
 # load packages
@@ -19,21 +21,26 @@ library(scales)  # allows ggplot axis labels to be wrapped
 
 # load datasets
 # These datasets were downloaded from TFL 25th February 2021 and data cleansed
-c_asl = readRDS(file = "data/cleansed_asl")
-c_crossings = readRDS(file = "data/cleansed_crossings")
-c_cyclelanetrack = readRDS(file = "data/cleansed_cycle_lane_track")
-c_signals = readRDS(file = "data/cleansed_signals")
-c_trafficcalming = readRDS(file = "data/cleansed_trafficcalming")
-c_restrictedroutes = readRDS(file = "data/cleansed_restricted_route")
-c_restrictedpoints = readRDS(file = "data/cleansed_restrictedpoints")
-c_signage = readRDS(file = "data/cleansed_signage")
-c_parking = readRDS(file = "data/cleansed_parking")
+# data cleansing code reun on 24/01/2022 to sort out gdal linus issue
+c_asl = readRDS(file = "data/cleansed_asl_24_01_2022")
+c_crossings = readRDS(file = "data/cleansed_crossings_24_01_2022")
+c_cyclelanetrack = readRDS(file = "data/cleansed_cycle_lane_track_24_01_2022")
+c_signals = readRDS(file = "data/cleansed_signals_24_01_2022")
+c_trafficcalming = readRDS(file = "data/cleansed_trafficcalming_24_01_2022")
+c_restrictedroutes = readRDS(file = "data/cleansed_restricted_route_24_01_2022")
+c_restrictedpoints = readRDS(file = "data/cleansed_restrictedpoints_24_01_2022")
+c_signage = readRDS(file = "data/cleansed_signage_24_01_2022")
+c_parking = readRDS(file = "data/cleansed_parking_24_01_2022")
 
 
 ################################################################################
 # Create visualisations of the characteristics:
 # - bar charts for count/% 
 # - density plots for length/width
+
+# 'space' plot objects required to line up all left hand bars for each asset
+# tc doesnt need a space one as it is the default one that the others measure 
+# up against.  
 
 
 # 1) ASL
@@ -87,11 +94,14 @@ ASL = rbind(ASL_FDR, ASL_NIL,ASL_FDRLFT, ASL_COLOUR_F, ASL_FDCENT, ASL_FDRIGH, A
                          labels = c(".            Shared nearside lane", "Right feeder lane", 
                                     "Centre feeder lane", "Coloured tarmac", 
                                     "No characteristics", "Left feeder lane",  
-                                    "Feeder lane present"))) # factor and order correctly
-  
+                                    "Feeder lane present"))) %>% # factor and order correctly
+  mutate(bar_label = paste0(Count, " (", pct, "%)"))
+
 #manually recode
 ASL[6,4] = "0.7%" # manually recode
 ASL[7,4] = "0.2%"
+ASL[6,6] = "27 (0.7%)"
+ASL[7,6] = "7 (0.2%)"
 
 # # create stacked bar chart of ASL count with % in text
 asl_count = ggplot() +
@@ -104,8 +114,8 @@ asl_count = ggplot() +
         axis.title.y = element_blank(),
         axis.text = element_text(size = 16, colour = "grey25"),
         axis.title.x = element_text(size = 20)) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2100)) +
-  geom_text(data = ASL, aes(x = Count, label = Percentage, y = charac),
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2300)) +
+  geom_text(data = ASL, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5) +
   scale_y_discrete(labels = wrap_format(30))
 
@@ -120,8 +130,8 @@ asl_count_space = ggplot() +
         axis.text = element_text(size = 16, colour = "grey25"),
         axis.title.x = element_text(size = 20),
         plot.margin = unit(c(0, 0, 0, 1.75), "cm")) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2100)) +
-  geom_text(data = ASL, aes(x = Count, label = Percentage, y = charac),
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2300)) +
+  geom_text(data = ASL, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5) +
   scale_y_discrete(labels = wrap_format(30))
 
@@ -167,7 +177,10 @@ CRS = rbind(CRS_SIGNAL, CRS_SEGREG, CRS_NIL, CRS_CYGAP, CRS_PEDEST, CRS_LEVEL) %
                                     "CRS_SEGREG", "CRS_SIGNAL"),
                          labels = c("Crossing over rail or tram tracks", "Cyclists must dismount",
                                     "Gap in island or kerb", "No characteristics", 
-                                    "Cyclists segregated", "Signal controlled crossing")))
+                                    "Cyclists segregated", "Signal controlled crossing"))) %>%
+  mutate(bar_label = paste0(Count, " (", pct, "%)"))
+
+
 
 # Create stacked bar chart of CRS count with % in text
 cross_count = ggplot() +
@@ -180,9 +193,9 @@ cross_count = ggplot() +
         axis.title.y = element_blank(),
         axis.text = element_text(size = 16, colour = "grey25"),
         axis.title.x = element_text(size = 20)) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2100)) +
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2300)) +
   scale_y_discrete(labels = wrap_format(30)) +
-  geom_text(data = CRS, aes(x = Count, label = Percentage, y = charac),
+  geom_text(data = CRS, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5)
 
 cross_count_space = ggplot() +
@@ -196,9 +209,9 @@ cross_count_space = ggplot() +
         axis.text = element_text(size = 16, colour = "grey25"),
         axis.title.x = element_text(size = 20),
         plot.margin = unit(c(0, 0, 0, 1.15), "cm")) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2100)) +
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 800, 1600), limits = c(0, 2300)) +
   scale_y_discrete(labels = wrap_format(30)) +
-  geom_text(data = CRS, aes(x = Count, label = Percentage, y = charac),
+  geom_text(data = CRS, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5)
 
 
@@ -316,11 +329,15 @@ CLT = rbind(CLT_CARR, CLT_BIDIRE, CLT_SHARED, CLT_ADVIS, CLT_COLOUR_F, CLT_PARKR
                                     "Part-time cycle lane/track", "Partially segregated", 
                                     "Route by or through a Park", "Coloured tarmac", 
                                     "Advisory cycle lane", "Shared with other users", 
-                                    "Bi-directional (two-way flow)", "On-carriageway"))) 
+                                    "Bi-directional (two-way flow)", "On-carriageway"))) %>%
+  mutate(bar_label = paste0(Count, " (", pct, "%)"))
 
 CLT[14,4] = "0.5%" # manually recode
 CLT[15,4] = "0.4%"
 CLT[16,4] = "0.2%"
+CLT[14,6] = "132 (0.5%)"
+CLT[15,6] = "104 (0.4%)"
+CLT[16,6] = "63 (0.2%)"
 
 # # create stacked bar chart of CLT count with % in text
 clt_count = ggplot() +
@@ -333,8 +350,8 @@ clt_count = ggplot() +
         axis.title.y = element_blank(),
         axis.text = element_text(size = 16, colour = "grey25"),
         axis.title.x = element_text(size = 20)) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 5000, 10000), limits = c(0, 16100)) +
-  geom_text(data = CLT, aes(x = Count, label = Percentage, y = charac),
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 5000, 10000), limits = c(0, 20650)) +
+  geom_text(data = CLT, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5) +
   scale_y_discrete(labels = wrap_format(30))
 
@@ -349,8 +366,8 @@ clt_count_space = ggplot() +
         axis.text = element_text(size = 16, colour = "grey25"),
         axis.title.x = element_text(size = 20),
         plot.margin = unit(c(0, 0, 0, 0.6), "cm")) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 5000, 10000), limits = c(0, 16100)) +
-  geom_text(data = CLT, aes(x = Count, label = Percentage, y = charac),
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 5000, 10000), limits = c(0, 20650)) +
+  geom_text(data = CLT, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5) +
   scale_y_discrete(labels = wrap_format(30))
 
@@ -398,8 +415,10 @@ SIG = rbind(SIG_EARLY, SIG_GATE, SIG_HEAD, SIG_NIL, SIG_SEPARA, SIG_TWOSTG) %>%
                          labels = c("No characteristics", "Two-stage right turn", 
                                     "Cycle/bus gate allowing cycles through",
                                     "Early release for cyclists", "Separate stage for cyclists", 
-                                    "Cycle symbol on signal lights"))) 
+                                    "Cycle symbol on signal lights"))) %>%
+  mutate(bar_label = paste0(Count, " (", pct, "%)"))
 SIG[4,4] = "0.9%"
+SIG[4,6] = "4 (0.9%)"
 
 # # create stacked bar chart of Signal count with % in text
 sig_count = ggplot() +
@@ -413,7 +432,7 @@ sig_count = ggplot() +
         axis.text = element_text(size = 16),
         axis.title.x = element_text(size = 20)) +
   scale_x_continuous(expand = c(0,0), breaks = c(0, 300), limits = c(0, 525)) +
-  geom_text(data = SIG, aes(x = Count, label = Percentage, y = charac),
+  geom_text(data = SIG, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5) +
   scale_y_discrete(labels = wrap_format(30))
 
@@ -428,8 +447,8 @@ sig_count_space = ggplot() +
         axis.text = element_text(size = 16),
         axis.title.x = element_text(size = 20),
         plot.margin = unit(c(0, 0.0, 0, 0.35), "cm")) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 300), limits = c(0, 525)) +
-  geom_text(data = SIG, aes(x = Count, label = Percentage, y = charac),
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 300), limits = c(0, 600)) +
+  geom_text(data = SIG, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5) +
   scale_y_discrete(labels = wrap_format(30))
 
@@ -496,8 +515,10 @@ TC = rbind(TRF_BARIER, TRF_CALM, TRF_CUSHI, TRF_ENTRY, TRF_HUMP, TRF_NAROW, TRF_
                          labels = c("No characteristics", "Carriageway narrowing e.g. chicane", 
                                     "Other traffic calming measure", "Barrier cyclists can pass", 
                                     "Raised table at junction", "Hump/cushion is sinusoidal", 
-                                    "Side road entry treatment e.g. raised", "Speed cushion", "Speed hump"))) 
+                                    "Side road entry treatment e.g. raised", "Speed cushion", "Speed hump"))) %>%
+  mutate(bar_label = paste0(Count, " (", pct, "%)"))
 TC[7,4] = "0.02%" # manually recode
+TC[7,6] = "12 (0.02%)"
 
 # # create stacked bar chart of traffic count with % in text
 tc_count = ggplot() +
@@ -510,8 +531,8 @@ tc_count = ggplot() +
         axis.title.y = element_blank(),
         axis.text = element_text(size = 16),
         axis.title.x = element_text(size = 20)) +
-  scale_x_continuous(expand = c(0,0), breaks = c(0, 20000), limits = c(0, 39000)) +
-  geom_text(data = TC, aes(x = Count, label = Percentage, y = charac),
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 20000), limits = c(0, 40500)) +
+  geom_text(data = TC, aes(x = Count, label = bar_label, y = charac),
             hjust = -0.3, size = 5) +
   scale_y_discrete(labels = wrap_format(30))
 
@@ -678,7 +699,7 @@ clt_df = c_cyclelanetrack %>%
 clt_carr = clt_df %>%
   filter(CLT_CARR == "TRUE") %>%
   mutate(charac = "CLT_CARR")
-clt_seg = clt_df %>%
+clt_seg = clt_df %>% 
   filter(CLT_SEGREG == "TRUE") %>%
   mutate(charac = "CLT_SEGREG")
 clt_stepp = clt_df %>%
@@ -791,16 +812,31 @@ clt_density = ggplot(clt_density_df) +
         axis.text = element_text(size = 16),
         axis.title.x = element_text(size = 20))
 
-###########################
-# Saving plots
+#############################
+#       Finalise plots      #
+#############################
 
 library(patchwork)
-asl_charac = asl_count_space + asl_density + plot_layout(widths = c(3, 1)) # want 3:1 to get all labels displayed
-cross_charac = cross_count_space + cross_density + plot_layout(widths = c(3, 1))
-clt_charac = clt_count_space + clt_density + plot_layout(widths = c(3, 1))
-sig_charac = sig_count_space + plot_spacer() + plot_layout(widths = c(3, 1))
-tc_charac = tc_count + plot_spacer() + plot_layout(widths = c(3, 1))
 
+#Create patchwork object for each asset class.  
+## plot spacers and widths used to put bar charts and density plots together
+## but not required for sig and tc
+
+asl_charac = asl_count_space + asl_density + plot_layout(widths = c(4, 1))
+cross_charac = cross_count_space + cross_density + plot_layout(widths = c(4, 1))
+clt_charac = clt_count_space + clt_density + plot_layout(widths = c(4, 1))
+sig_charac = sig_count_space
+tc_charac = tc_count
+
+
+# then used Plots > export > save as image
+# all saved as 1100 width
+# heights: 
+# - asl 330
+# - cross - 300
+# - clt - 670
+# - sig - 300
+# - tc - 400
 
 
 
@@ -809,6 +845,9 @@ tc_charac = tc_count + plot_spacer() + plot_layout(widths = c(3, 1))
 # 6) Comparison of variables of on v off road infrastructure
 # including drawing bar charts
 
+c_cyclelanetrack = c_cyclelanetrack %>%
+  mutate(length_m = st_length(geometry)) %>%
+  mutate(length_km = units::set_units(length_m,"km"))
 
 # create new variable which is clearly on/off road
 clt_on_off = c_cyclelanetrack %>%
@@ -931,6 +970,10 @@ length = on_off_clt_comparison_lengths %>%
 # join together
 on_off_comparison_lengths4ggplot = left_join(length, perc)
 
+
+################################################################################
+#       This was code for constructing Figure 2 in submission 1 to JTH         #
+################################################################################
 off_var_order = on_off_comparison_lengths4ggplot %>%
   filter(on_off == "offroad") %>%
   arrange(desc(perc))
@@ -995,4 +1038,107 @@ length_chart = ggplot() +
 # Save on/off plots
 library(patchwork)
 on_off_fig = percent_chart + plot_spacer() + length_chart + plot_layout(widths = c(1.8, 0.05, 1.8))
+
+
+################################################################################
+#    This was code for constructing Figure 2 in the resubmission 1 to JTH      #
+################################################################################
+
+# Get order of the longest bars first
+var_order_by_length = on_off_comparison_lengths4ggplot %>%
+  group_by(characteristic) %>%
+  summarise(total_length = sum(round_length)) %>%
+  arrange(desc(total_length))
+var_order = var_order_by_length %>%
+  dplyr::pull(1)
+# [1] "bidir"      "shared"     "park"       "advis"      "colour"    
+# [6] "parttime"   "water"      "partsegreg" "priority"   "contra"    
+# [11] "mandat"     "segreg"     "busbypass"  "stepp"      "bypass"  
+
+# # Below creates new column that we use to order the bars and gives sensible variable labels
+# on_off_comparison_lengths4ggplot_order = on_off_comparison_lengths4ggplot %>%
+#   mutate(variable_order = factor(characteristic,
+#                                  levels = c("bidir", "shared", "park", "advis",
+#                                             "colour", "parttime", "water", "partsegreg",
+#                                             "priority", "contra","mandat","segreg",
+#                                             "busbypass", "stepp", "bypass"),
+#                                  labels = c("Bi-directional (two-way flow)", "Shared with other users", 
+#                                             "Route by or through a Park", "Advisory cycle lane", 
+#                                             "Coloured tarmac", "Part-time cycle lane/track",
+#                                             "Route by water", "Partially segregated",
+#                                             "Given priority", "Contraflow cycle lane/track",
+#                                             "Mandatory cycle lane", "Fully-segregated", 
+#                                             "Continuous cycle facilities at bus stop",
+#                                             "Stepped segregation", "Cycle bypass at traffic signals"))) %>%
+#   mutate(on_off_order = factor(on_off,
+#                                levels = c("offroad", "onroad"),
+#                                labels = c("Off-road", "On-road"))) %>%# rename columns for legend label
+#   mutate(variable_order = fct_rev(variable_order)) %>%
+#   mutate(on_off_order = fct_rev(on_off_order))  # reverses so that off left and on is right
+# 
+# 
+# # Create stacked bar chart of length - matching table graphics  400x550
+# ggplot() +
+#   geom_bar(data = on_off_comparison_lengths4ggplot_order,
+#            aes(x = round_length, y = variable_order, fill = on_off_order), stat = "identity",
+#            colour = "black") +
+#   scale_fill_manual(values = c("grey", "white")) +
+#   labs(x = paste0("Length in km", "\n", "")) +
+#   theme_minimal() +
+#   theme(axis.title.y = element_blank(),
+#         #axis.text.y = element_blank(),
+#         axis.text = element_text(size = 16, colour = "grey25"),
+#         panel.grid = element_blank(),  # removes all grid lines
+#         axis.line.x = element_line(size=0.1, color="black"),
+#         legend.title = element_blank(), # adds axis line back in
+#         legend.text = element_text(size = 18),
+#         axis.title.x = element_text(size = 18),
+#         legend.position = c(0.7, 0.5),
+#         legend.direction = "horizontal") +
+#   guides(fill = guide_legend(reverse = TRUE)) +
+#   scale_x_continuous(expand = c(0,0), breaks = c(0, 500, 1000, 1500), limits = c(0, 1950))
+
+
+on_off_comparison_lengths4ggplot_order2 = on_off_comparison_lengths4ggplot %>%
+  mutate(variable_order = factor(characteristic,
+                                 levels = c("bidir", "shared", "park", "advis",
+                                            "colour", "parttime", "water", "partsegreg",
+                                            "priority", "contra","mandat","segreg",
+                                            "busbypass", "stepp", "bypass"),
+                                 labels = c("Bi-directional (two-way flow)", "Shared with other users", 
+                                            "Route by or through a Park", "Advisory cycle lane", 
+                                            "Coloured tarmac", "Part-time cycle lane/track",
+                                            "Route by water", "Partially segregated",
+                                            "Given priority", "Contraflow cycle lane/track",
+                                            "Mandatory cycle lane", "Fully-segregated", 
+                                            "Continuous cycle facilities at bus stop",
+                                            "Stepped segregation", "Cycle bypass at traffic signals"))) %>%
+  mutate(on_off_order = factor(on_off,
+                               levels = c("offroad", "onroad"),
+                               labels = c("Off-road", "On-road"))) %>%# rename columns for legend label
+  mutate(variable_order = fct_rev(variable_order))
+
+
+# Create stacked bar chart of length - keeps on road on left 800x500
+ggplot() +
+  geom_bar(data = on_off_comparison_lengths4ggplot_order2,
+           aes(x = round_length, y = variable_order, fill = on_off_order), stat = "identity",
+           colour = "black") +
+  scale_fill_manual(values = c("white", "grey")) +
+  labs(x = paste0("Length in km", "\n", "")) +
+  theme_minimal() +
+  theme(axis.title.y = element_blank(),
+        #axis.text.y = element_blank(),
+        axis.text = element_text(size = 16, colour = "grey25"),
+        panel.grid = element_blank(),  # removes all grid lines
+        axis.line.x = element_line(size=0.1, color="black"),
+        legend.title = element_blank(), # adds axis line back in
+        legend.text = element_text(size = 18),
+        axis.title.x = element_text(size = 18),
+        legend.position = c(0.7, 0.5),
+        legend.direction = "horizontal") +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_x_continuous(expand = c(0,0), breaks = c(0, 500, 1000, 1500), limits = c(0, 1950))
+
+
 

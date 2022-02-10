@@ -5,6 +5,9 @@
 # It recodes the observations that has no Borough assigned                        #
 # It also checks that the Boroughs are correctly assigned                         #
 # 37 cycle parking sites incorrectly located and reallocated                      #
+#                                                                                 #
+# Code file rerun on 24/01/2022 to ensure spatial data not affected by gdal       #
+# library issue.                                                                  #
 ###################################################################################
 
 ######################################
@@ -22,7 +25,7 @@ library(forcats)
 library(units)
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -60,8 +63,10 @@ unique(cycle_parking$PRK_PROVIS) # contains NA
 
 # examine URL data
 count_photo1 =  cycle_parking %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 299 have no asset photo 1
 count_photo2 =  cycle_parking %>%
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 298 have no asset photo 2
 
 ###############################################
@@ -83,8 +88,8 @@ f_cycle_parking = cycle_parking %>%
 # parked) have NAs.  These need correcting before can calculate no of 
 # bikes that can be parked per borough
 
-# sum(is.na(f_cycle_parking$PRK_PROVIS)) # 2 NA
-# sum(is.na(f_cycle_parking$PRK_CPT)) # 2 NAs
+#sum(is.na(f_cycle_parking$PRK_PROVIS)) # 2 NA
+#sum(is.na(f_cycle_parking$PRK_CPT)) # 2 NAs
 # # CPcount_borough_NA = f_cycle_parking %>% # identify which observations are NA
 # #   st_drop_geometry() %>%
 # #   filter(is.na(PRK_CPT)) # 2 observations have NA - both for PROVIS & CPT
@@ -153,5 +158,5 @@ parking_corrected = joined %>%
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(parking_corrected, file = "data/cleansed_parking")
+#saveRDS(parking_corrected, file = "data/cleansed_parking_24_01_2022")
 

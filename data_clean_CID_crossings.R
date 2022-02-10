@@ -5,6 +5,8 @@
 # It recodes the observations that have no Borough assigned (n = 29)              #
 # It also checks that the Boroughs are correctly assigned where they exist        #
 #                                                                                 #
+# Code rerun in Jan 2022 to ensure that spatial data not affected by gdal library #
+# linux issue.                                                                    #
 ###################################################################################
 
 ######################################
@@ -22,7 +24,7 @@ library(forcats)
 library(units)
 
 # Set Mapview options to use data CRS rather than OSM projections
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -51,8 +53,10 @@ unique(crossings$CRS_SEGREG)
 
 # examine URL data
 count_photo1 =  crossings %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 31 have no asset photo 1
 count_photo2 =  crossings %>%
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 32 have no asset photo 2
 
 ###############################################
@@ -378,7 +382,7 @@ sum(st_length(crossings_ls_corrected)) # check have the correct length(width) YE
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(crossings_ls_corrected, file = "data/cleansed_crossings")
+#saveRDS(crossings_ls_corrected, file = "data/cleansed_crossings_24_01_2022")
 
 
 

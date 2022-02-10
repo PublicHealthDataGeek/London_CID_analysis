@@ -11,8 +11,13 @@
 # an obvious OSM speed limit nearby - e.g. all surrounding roads are 20mph and    #
 # with no indication that the cycle lane road is any different.                   #
 #                                                                                 #
-# Compliance determined by logic.  
-
+# Compliance determined by logic.                                                 #
+#                                                                                 #
+# Code rerun on 26/01/2022 to check works and to ensure correct spatial location  #
+# of any spatial objects following the issue with the gdal libraries and linux    #
+# in Dec 2021.  Code works fine and same results obtained. New versions of spatial#
+# datasets saved.                                                                 #
+###################################################################################
 
 # Background
 # Order of Protection from motor traffic on highways (DFT guidance pg 33)
@@ -33,7 +38,7 @@ library(viridis)
 
 
 # Package options
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 
 
@@ -41,8 +46,8 @@ mapviewOptions(native.crs = TRUE)
 #                   Import and data cleanse OSM speed limit data               #
 ################################################################################
 
-# Load 2019 OSM dataset - nb commented out due to huge file size - cleaned version available in data folder
-#gl_pbf19 = "data/greater-london-190101.osm.pbf"
+# Load 2019 OSM dataset
+gl_pbf19 = "data/greater-london-190101.osm.pbf"
 gl_osm_lines19 = oe_read(gl_pbf19, quiet = FALSE, 
                          extra_tags = c("maxspeed", "width", "maxwidth", "lanes")) # Simple feature collection with 313409 features and 10 fields, CRS WGS84
 
@@ -182,24 +187,29 @@ osm_speed_limits_tidy = osm_speed_limits %>%
 # Save OSM data #
 #################
 
-#saveRDS(osm_speed_limits_tidy, file = "data/lon_osm_speed_limits_tidy.Rds")
+#saveRDS(osm_speed_limits_tidy, file = "data/lon_osm_speed_limits_tidy_26_01_2022.Rds")
 
-
+osm_speed_limits_tidy = readRDS(file = "data/lon_osm_speed_limits_tidy_26_01_2022.Rds")
 
 ############################################
 # Join speed limit data to Cycle lane data #
 ############################################
 
 # Import cleansed onroad cycle lanes dataframe that has segregation information coded (created in VISUALISE CYCLELANES.r)
-cycle_lanes = readRDS(file = "data/cleansed_onroad_cyclelanes_segregation.Rds")
+cycle_lanes = readRDS(file = "data/cleansed_onroad_cyclelanes_segregation_26_01_2022.Rds")
 
 # collapse segregation into these categories that match Figure 4.1 in LTN 1/20
 # Convert factored numbers to relevant labels
 cycle_lanes = cycle_lanes %>%
   select(c(FEATURE_ID, BOROUGH, geometry, length_m, type, Highest_separation)) %>%
   mutate(Highest_separation = fct_collapse(Highest_separation, 
-                                           "Stepped/part segregation" = c("Stepped", "Part-segregated"),
+                                           "Stepped/part segregation" = c("Stepped", "Part segregation"),
                                            "Mandatory/Advisory cycle lane" = c("Mandatory cycle lane", "Advisory cycle lane")))
+cycle_lanes %>%
+  st_drop_geometry() %>%
+  group_by(Highest_separation) %>%
+  summarise(count = n())
+
 # Highest_separation            `n()`
 # <fct>                         <int>
 # 1 Segregated                     1371   -> Any speed limit, any traffic flow
@@ -353,6 +363,7 @@ test_appropriateness = manip_sl %>%
                                            (numeric_speed_limit == "Unknown") & (Highest_separation != "Segregated") ~ "Unknown",  
                                            TRUE ~ "FALSE"))
 
+
 # How many unknowns do we now have that need managing? 
 test_appropriateness %>%
   st_drop_geometry() %>%
@@ -364,8 +375,8 @@ rm(cl_sl_joined, cl_unmatched_within, grouped_sl, intersects_within, london_spee
    sl_touching_cl_unmatched_within, unmatched_cl_sl)
 
 # Save RDS files
-#saveRDS(test_appropriateness, file = "data/test_appropriateness.Rds")
-#saveRDS(london_speed_limits, file = "data/london_speed_limits.Rds")
+saveRDS(test_appropriateness, file = "data/test_appropriateness_26_01_2022.Rds")
+saveRDS(london_speed_limits, file = "data/london_speed_limits_26_01_2022.Rds")
 
 
 ###############################################################################
@@ -3212,7 +3223,7 @@ rm(Wes, Wes_sl, Wes_appropriateness, Wes_known, Wes_unknown,
 # london_compliance_summary_final= t(london_compliance_summary_final)
 # london_compliance_summary_final = london_compliance_summary_final %>%
 #   janitor::row_to_names(row_number = 1)
-# saveRDS(london_compliance_final, file = "data/london_compliance_final.Rds")
+#saveRDS(london_compliance_final, file = "data/london_compliance_final_26_01_2022.Rds")
 # saveRDS(london_compliance_summary_final, file = "data/london_compliance_summary_final.Rds")
 
 #  Check how many now coded
@@ -3291,8 +3302,8 @@ compliance_table = left_join(compliance_by_type, compliance_by_seg)
 # Load and manipulate Local Authority spatial data for visualisations #
 #######################################################################
 
-# import May 2020 ONS LA boundary data clipped to coastline (used so that River Thames appears)
-lon_lad_2020_c2c = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFC.Rds")
+# import Dec 2020 ONS LA boundary data clipped to coastline (used so that River Thames appears)
+lon_lad_2020_c2c = readRDS(file = "./map_data/lon_LAD_boundaries_Dec_2020_BFC.Rds")
 
 # simply borough shapes
 lon_lad_2020_c2c <- rmapshaper::ms_simplify(lon_lad_2020_c2c, keep=0.015) #Simplify boroughs
@@ -3476,12 +3487,12 @@ names(wider_borough_compliance_table)[6] = "percentage_Not_compliant"
 names(wider_borough_compliance_table)[9] = "total_length_Not_compliant"
 
 # # Calculations for totals
-# sum(wider_borough_compliance_table$total_length_Compliant) # 196436.3
+#  sum(wider_borough_compliance_table$total_length_Compliant) # 196436.3
 # sum(wider_borough_compliance_table$total_length_Not_compliant) # 565811.3
 # sum(wider_borough_compliance_table$total_length_Unknown) # 197478
-# total_length = sum(wider_borough_compliance_table$total_length_Compliant) +
-#   sum(wider_borough_compliance_table$total_length_Not_compliant) +
-#   sum(wider_borough_compliance_table$total_length_Unknown)
+#  total_length = sum(wider_borough_compliance_table$total_length_Compliant) +
+#    sum(wider_borough_compliance_table$total_length_Not_compliant) +
+#    sum(wider_borough_compliance_table$total_length_Unknown)
 # total_length # 959725.7
 # per_compliant = sum(wider_borough_compliance_table$total_length_Compliant)/total_length *100 # 20.46797
 # per_not_compliant = sum(wider_borough_compliance_table$total_length_Not_compliant)/total_length *100 # 58.95552
@@ -3695,14 +3706,21 @@ comp_vis = known_sl_compliance_vis %>%
 # Create visualisation for paper (figure 6) #
 #############################################
 
+# had to alter text sizes so that when combined look ok
+#Option1) cowplot
 maps = plot_grid(lines, map_fixed, 
                  ncol = 1, nrow = 2)
 fig_6 = plot_grid(maps, comp_vis,
           ncol = 2, rel_widths = c(2,1.2))
+ggsave("output/summary_stats/Figure_6.tiff", 
+       plot = fig_6, dpi = 300, width = 190, height = 160, units = "mm", bg = "white")
 
 
-
-
+# Option 2) - makes lots of white space around maps
+library(patchwork)
+ltn_comp_plot = ((lines/map_fixed)|comp_vis) + plot_layout(widths = c(4,1), )
+ggsave("output/summary_stats/ltn_compliance.tiff", 
+       plot = ltn_comp_plot, dpi = 300, width = 190, height = 160, units = "mm")
 
 
 
@@ -3853,7 +3871,8 @@ figureA3 = known_sl_compliance_ns_vis %>%
 
 # Save visualisation
 figA3 = figureA3 + plot_spacer() +plot_layout(width = c(1, 0.1)) # have to add spacer as otherwise includes grey squares (!?!)
-
+ggsave("output/summary_stats/fa3_ltn_compliance_exc_shared.tiff", 
+       plot = figA3, dpi = 300, width = 90, height = 160, units = "mm")
 
 
 

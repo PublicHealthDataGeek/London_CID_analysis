@@ -3,7 +3,10 @@
 #                                                                                 #
 # This code downloads the CID and cleans up the variables                         #                        
 # It also checks that the Boroughs are correctly assigned                         #                                                      #
-# 2 observations incorrectly located and reallocated                              #
+# 2 observations incorrectly located and reallocated.                             #
+#                                                                                 #
+# Code rerun Jan 2022 to ensure that spatial data is not affected by gdal library #
+# linux issue.                                                                    #
 ###################################################################################
 
 ######################################
@@ -21,7 +24,7 @@ library(forcats)
 library(units)
 
 # set mapview options so that matches crs
-mapviewOptions(native.crs = TRUE)
+mapviewOptions(native.crs = TRUE, fgb = FALSE)
 
 # import May 2020 ONS LA boundary data (required for NA management)
 lon_lad_2020 = readRDS(file = "./map_data/lon_LAD_boundaries_May_2020_BFE.Rds")
@@ -46,8 +49,10 @@ unique(restricted_points$RST_LIFT)
 
 # examine URL data
 count_photo1 =  restricted_points %>%
+  st_drop_geometry() %>%
   count(PHOTO1_URL) # 12 have no asset photo 1
 count_photo2 =  restricted_points %>%
+  st_drop_geometry() %>%
   count(PHOTO2_URL) # 12 have no asset photo 2
 
 
@@ -114,5 +119,5 @@ restrictedpoints_corrected = joined %>%
 ######################
 # SAVE CLEAN DATASET #
 ######################
-#saveRDS(restrictedpoints_corrected, file = "data/cleansed_restrictedpoints")
+#saveRDS(restrictedpoints_corrected, file = "data/cleansed_restrictedpoints_24_01_2022")
 
