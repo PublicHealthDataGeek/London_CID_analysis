@@ -55,7 +55,7 @@ This [code(visualise_cyclelanes.R)](code/visualise_cyclelanes.R) manipulates the
 ##### Figure 6: Highest degree of separation of on-road cycle lanes from motor vehicles: Spatial distribution (left) and spatially arranged borough bar charts showing length in kilometre (top right) and length by borough area in kilometre per square kilometre (bottom right)
 ![](images/Figure_6.jpeg) 
 
-Whilst this [code (visualise_LTN1_20_compliance.R)](code/visualise_LTN1_20_compliance.R) manipulates the OpenStreetMap data and the cycle lanes data to assess compliance with the UK Design Standards.  Not all the data used in this code is in the data folder because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf; https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
+Whilst this [code](code/visualise_LTN1_20_compliance.R) manipulates the OpenStreetMap data and the cycle lanes data to assess compliance with the UK Design Standards.  Not all the data used in this code is in the data folder because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf; https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
 
 
 ##### Figure 7: Compliance of on-road cycle lanes with LTN 1/20: Spatial distribution (top left), spatially arranged borough bar charts showing length in kilometre (bottom right) and percentage of length by borough where speed limit is known (right, solid line = mean)
