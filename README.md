@@ -38,7 +38,7 @@ These two R files contain the code used to generate summaries of the data includ
 This [code](code/visualise_characteristics.R) creates bar charts and density plots for the characteristics of the different types of safety-related infrastructure that were used in  table 1 and figure 3. 
 
 #### Figure 4
-This [code](code/visualise_all_assets.R) generates the map of the safety-related infrastructure in the CID (figure 4) shown below.
+This [code](code/visualise_all_assets.R) generates the map of infrastructure most relevent for safety in the CID (figure 4) shown below.
 ##### Figure 4: Spatial distribution of cycling infrastructure across London
 ![](images/Figure_4_resub.jpeg)
 
@@ -58,7 +58,7 @@ This [code](code/visualise_cyclelanes.R) manipulates the data to create the visu
 Whilst this [code](code/visualise_LTN1_20_compliance.R) manipulates the OpenStreetMap data and the cycle lanes data to estimate and visualise compliance with the UK Design Standards (Figure 7).  Not all the data used in this code is in the data folder because of the size of the datasets.  However, if you run the code it should be reproducible.  The OSM Greater London data file for January 2019 OSM data was sourced from Geofabrik (greater-london-190101.os.pbf; https://download.geofabrik.de/europe/great-9britain/england/greater-london.html).
 
 
-##### Figure 7: Estimated compliance of on-road cycle lanes with LTN 1/20: Spatial distribution (top left), spatially arranged borough bar charts showing length in kilometre (bottom left) and percentage of length by borough where speed limit is known (right, solid line = mean)
+##### Figure 7: Estimated compliance of CID on-road cycle lanes with LTN 1/20: Spatial distribution (top left), spatially arranged borough bar charts showing length in kilometre (bottom left) and percentage of length by borough where speed limit is known (right, solid line = mean)
 ![](images/Figure_7.jpeg)
   
   
