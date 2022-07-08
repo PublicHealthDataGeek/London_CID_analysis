@@ -1,7 +1,10 @@
 # Is cycling infrastructure in London safe and equitable? Evidence from the Cycling Infrastructure Database.
 
 This repository contains the code used to clean the data for this paper and to generate the visualisations.  
-LINK TO PAPER
+Paper available [here](https://doi.org/10.1016/j.jth.2022.101369).
+
+Please cite as:
+Tait C, Beecham R, Lovelace R, Barber S. 2022. Is cycling infrastructure in London safe and equitable? Evidence from the cycling infrastructure database. Journal of Transport and Health. https://doi.org/10.1016/j.jth.2022.101369
 
 ## CID data cleaning code 
 The below files show the data cleaning process for each of the 9 CID datasets.  The data cleansed files can be found in the data subfolder.   
